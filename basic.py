@@ -1,8 +1,6 @@
 #Types that we are going to have TYPES, defined as constants
 #CONSTANTS
 
-from distutils.log import error
-
 
 DIGITS  = '0123456789'
 
