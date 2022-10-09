@@ -1,8 +1,26 @@
 #Types that we are going to have TYPES, defined as constants
 #CONSTANTS
 
+from distutils.log import error
+
+
 DIGITS  = '0123456789'
 
+#Errors
+
+class Error:
+    def __init__ (self, error_name, details):
+        self.error_name = error_name
+        self.details = details
+    def as_string(self):
+        result = f'{self.error_name}: {self.details}'
+        return result
+class IllegalCharError(Error):
+    def __init__(self, details):
+        super().__init__('Illefal Character', details)
+
+#TOKENS
+ 
 TT_INT        = 'TT_INT'
 TT_FLOAT      = 'FLOAT'
 TT_PLUS       = 'PLUS'  
@@ -12,10 +30,8 @@ TT_LBRACKET   = 'LBRACKET'
 TT_RBRACKET   = 'RBRACKET'
 TT_DIV        = 'DIV'
 
-#TOKENS
-
 class Token:
-    def __init__(self, type_, value): #initialisation method
+    def __init__(self, type_, value = None): #initialisation method
       self.type = type_
       self.value = value
 
@@ -62,10 +78,12 @@ class Lexer: #initial method (based)
                 tokens.append(Token(TT_RBRACKET))
                 self.advance()
             else:
-                #return some error if we haven't found necessary character
-                #have to define error custom class 
+                char = self.current_char
+                self.advance()
+                return [], IllegalCharError("'" + char + "'")
 
-            return tokens    
+
+            return tokens, None    
 
         def make_number(self):
             num_str = '' #to keep track of number in the string
@@ -78,8 +96,17 @@ class Lexer: #initial method (based)
                     num_str += '.'
                 else: #if it's not a dash 
                     num_str += self.current_char #adding string to current meaning  
-
+                self.advance()
+                    
         if self.dot_count == 0:
             return Token(TT_INT, int(self.num_str)) #transforming string into int
         else:
             return Token(TT_FLOAT, float(self.num_str)) #transforming string into float   
+
+#RUN
+
+def run(text): #function which is going to take text and run it 
+    lexer = Lexer(text)
+    tokens, error = lexer.make_tokens()
+    return tokens, error
+#have to be upgraded with new steps in the future
