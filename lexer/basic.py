@@ -29,18 +29,18 @@ class IllegalCharError(Error):
 #######################################
 
 class Position:
-    def __init__(self, idx, ln, col, fn, ftxt):
+    def __init__(self, idx, ln, col, fn, ftxt): #added a position. Why? Because we will be able to run external files
         self.idx = idx
         self.ln = ln
         self.col = col
         self.fn = fn
         self.ftxt = ftxt
 
-    def advance(self, current_char):
+    def advance(self, current_char): #taking current charrecter, than add index and increasing column
         self.idx += 1
         self.col += 1
 
-        if current_char == '\n':
+        if current_char == '\n': #stop-signal)
             self.ln += 1
             self.col = 0
 
